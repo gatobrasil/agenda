@@ -1,30 +1,865 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Assistente — ElevenLabs ConvAI</title>
-  <meta name="description" content="Página mínima com o widget oficial da ElevenLabs (ConvAI).">
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Dra. Carol — Cirurgia Plástica</title>
+  <meta name="description" content="Site oficial da Dra. Carol — Cirurgia Plástica. Agende sua consulta e conheça serviços, convênios e informações importantes." />
+  <meta name="theme-color" content="#0b6cff" />
   <style>
-    html, body { height: 100%; margin: 0; }
-    body { font-family: system-ui, -apple-system, Inter, Segoe UI, Roboto, sans-serif; background:#0f172a; color:#e5e7eb; }
-    .wrap { height:100%; display:flex; flex-direction:column; }
-    header { padding:12px 16px; text-align:center; color:#cbd5e1; font-size:14px; }
-    .embed { flex:1; display:flex; }
-    elevenlabs-convai { width:100%; height:100%; display:block; }
-    footer { text-align:center; font-size:12px; color:#94a3b8; padding:10px 0; }
+    :root{
+      --bg:#0b1020;
+      --card:#0f1730;
+      --muted:#9fb0d0;
+      --text:#eaf0ff;
+      --brand:#0b6cff;
+      --brand2:#7c3aed;
+      --ok:#22c55e;
+      --danger:#ef4444;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius: 18px;
+      --max: 1100px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 20% 10%, rgba(11,108,255,.28), transparent 60%),
+        radial-gradient(1000px 700px at 80% 0%, rgba(124,58,237,.22), transparent 60%),
+        radial-gradient(900px 600px at 70% 90%, rgba(34,197,94,.12), transparent 55%),
+        var(--bg);
+      line-height:1.5;
+    }
+    a{color:inherit; text-decoration:none}
+    img{max-width:100%; display:block}
+    .container{max-width:var(--max); margin:0 auto; padding:0 18px}
+    .pill{
+      display:inline-flex; gap:10px; align-items:center;
+      padding:10px 14px; border:1px solid rgba(255,255,255,.14);
+      border-radius:999px; background:rgba(255,255,255,.06);
+      backdrop-filter: blur(10px);
+    }
+    .dot{width:10px;height:10px;border-radius:50%; background:linear-gradient(135deg,var(--brand),var(--brand2))}
+    header{
+      position:sticky; top:0; z-index:50;
+      background:rgba(11,16,32,.62);
+      border-bottom:1px solid rgba(255,255,255,.10);
+      backdrop-filter: blur(12px);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:14px 0;
+      gap:12px;
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px; font-weight:800; letter-spacing:.2px;
+    }
+    .brand .logo{
+      width:34px;height:34px;border-radius:12px;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      box-shadow: 0 10px 28px rgba(11,108,255,.30);
+      flex:0 0 auto;
+    }
+    .navlinks{
+      display:flex; gap:14px; align-items:center;
+    }
+    .navlinks a{
+      padding:10px 12px;
+      border-radius:999px;
+      color:rgba(234,240,255,.92);
+      border:1px solid transparent;
+    }
+    .navlinks a:hover{border-color:rgba(255,255,255,.16); background:rgba(255,255,255,.06)}
+    .cta{
+      display:inline-flex; gap:10px; align-items:center; justify-content:center;
+      padding:12px 14px; border-radius:14px;
+      background:linear-gradient(135deg,var(--brand),var(--brand2));
+      color:white; font-weight:750;
+      box-shadow: 0 18px 50px rgba(11,108,255,.25);
+      border:0;
+      cursor:pointer;
+    }
+    .cta:hover{filter:saturate(1.05) brightness(1.03)}
+    .menuBtn{
+      display:none;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
+      color:var(--text);
+      border-radius:14px;
+      padding:10px 12px;
+      cursor:pointer;
+    }
+
+    /* Hero */
+    .hero{
+      padding:56px 0 28px;
+    }
+    .heroGrid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:22px;
+      align-items:center;
+    }
+    .h1{
+      font-size: clamp(34px, 4vw, 54px);
+      line-height:1.05;
+      margin:14px 0 12px;
+      letter-spacing:-.6px;
+    }
+    .lead{color:rgba(234,240,255,.86); font-size:18px; max-width:62ch}
+    .heroActions{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px}
+    .ghost{
+      display:inline-flex; gap:10px; align-items:center; justify-content:center;
+      padding:12px 14px; border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      color:rgba(234,240,255,.95);
+      font-weight:650;
+      cursor:pointer;
+    }
+    .ghost:hover{background:rgba(255,255,255,.08)}
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+      border:1px solid rgba(255,255,255,.14);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .profile{
+      padding:18px;
+      display:grid;
+      gap:14px;
+    }
+    .profileTop{
+      display:grid;
+      grid-template-columns: 84px 1fr;
+      gap:14px;
+      align-items:center;
+    }
+    .avatar{
+      width:84px;height:84px;border-radius:20px;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(255,255,255,.06);
+    }
+    .profile h3{margin:0; font-size:18px}
+    .profile p{margin:2px 0 0; color:rgba(234,240,255,.76)}
+    .badges{display:flex; gap:10px; flex-wrap:wrap}
+    .badge{
+      display:inline-flex; gap:8px; align-items:center;
+      padding:10px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(15,23,48,.40);
+      color:rgba(234,240,255,.88);
+      font-size:14px;
+    }
+    .badge b{color:var(--text)}
+    .profileMeta{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+    }
+    .mini{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,23,48,.28);
+    }
+    .mini .k{font-size:12px; color:rgba(234,240,255,.66)}
+    .mini .v{font-size:14px; margin-top:6px}
+    .mini .v a{color:rgba(234,240,255,.95); text-decoration:underline; text-underline-offset:3px}
+
+    /* Sections */
+    section{padding:44px 0}
+    .sectionTitle{
+      display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap;
+      margin-bottom:18px;
+    }
+    .sectionTitle h2{
+      margin:0;
+      font-size: clamp(24px, 2.3vw, 34px);
+      letter-spacing:-.4px;
+    }
+    .sectionTitle p{margin:0; color:rgba(234,240,255,.74); max-width:70ch}
+    .grid3{display:grid; grid-template-columns: repeat(3, 1fr); gap:14px}
+    .grid2{display:grid; grid-template-columns: repeat(2, 1fr); gap:14px}
+    .feature{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,23,48,.28);
+      min-height: 138px;
+    }
+    .feature h3{margin:10px 0 6px}
+    .feature p{margin:0; color:rgba(234,240,255,.72)}
+    .icon{
+      width:42px;height:42px;border-radius:14px;
+      display:grid; place-items:center;
+      background:linear-gradient(135deg, rgba(11,108,255,.25), rgba(124,58,237,.25));
+      border:1px solid rgba(255,255,255,.14);
+    }
+    .icon svg{width:22px;height:22px; opacity:.95}
+
+    /* Gallery */
+    .gallery{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+    }
+    .galleryMain, .gallerySide{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,23,48,.24);
+      overflow:hidden;
+    }
+    .ph{
+      border-radius:16px;
+      border:1px dashed rgba(255,255,255,.24);
+      background:rgba(255,255,255,.06);
+      display:grid; place-items:center;
+      color:rgba(234,240,255,.70);
+      min-height: 260px;
+      padding:16px;
+      text-align:center;
+    }
+    .ph small{display:block; margin-top:8px; color:rgba(234,240,255,.55)}
+    .phGrid{
+      display:grid; grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:12px;
+    }
+    .phMini{min-height: 150px}
+
+    /* Testimonials */
+    .quote{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,23,48,.24);
+    }
+    .quote p{margin:0 0 10px; color:rgba(234,240,255,.78)}
+    .quote .who{display:flex; align-items:center; justify-content:space-between; gap:10px; color:rgba(234,240,255,.62); font-size:13px}
+
+    /* FAQ */
+    details{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,23,48,.24);
+      border-radius:18px;
+      padding:14px 14px;
+    }
+    details + details{margin-top:10px}
+    summary{
+      cursor:pointer;
+      font-weight:700;
+      outline:none;
+    }
+    details p{margin:10px 0 0; color:rgba(234,240,255,.74)}
+
+    /* Contact */
+    .contact{
+      display:grid;
+      grid-template-columns: .95fr 1.05fr;
+      gap:14px;
+    }
+    form{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,23,48,.24);
+    }
+    label{display:block; font-size:13px; color:rgba(234,240,255,.70); margin:10px 0 6px}
+    input, textarea, select{
+      width:100%;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(11,16,32,.55);
+      color:var(--text);
+      outline:none;
+    }
+    input:focus, textarea:focus, select:focus{border-color: rgba(11,108,255,.65); box-shadow: 0 0 0 4px rgba(11,108,255,.15)}
+    textarea{min-height:110px; resize:vertical}
+    .formRow{display:grid; grid-template-columns: 1fr 1fr; gap:12px}
+    .helper{margin-top:10px; color:rgba(234,240,255,.60); font-size:12px}
+    .map{
+      padding:16px;
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(15,23,48,.24);
+      overflow:hidden;
+    }
+    .map iframe{width:100%; height:320px; border:0; border-radius:14px}
+    footer{
+      padding:24px 0 34px;
+      border-top:1px solid rgba(255,255,255,.10);
+      color:rgba(234,240,255,.65);
+    }
+    .footGrid{
+      display:grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap:14px;
+      align-items:start;
+    }
+    .footLinks{display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    .footLinks a{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.04);
+    }
+
+    /* WhatsApp button */
+    .wa{
+      position:fixed;
+      right:18px;
+      bottom:18px;
+      z-index:60;
+      display:flex; align-items:center; gap:10px;
+      padding:12px 14px;
+      border-radius:999px;
+      background:linear-gradient(135deg, #16a34a, #22c55e);
+      color:#06250f;
+      font-weight:850;
+      box-shadow: 0 18px 60px rgba(34,197,94,.25);
+      border:1px solid rgba(255,255,255,.16);
+    }
+    .wa span{color:#04200d}
+    .wa small{display:block; font-weight:700; opacity:.85}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      .heroGrid{grid-template-columns: 1fr; }
+      .gallery{grid-template-columns: 1fr}
+      .contact{grid-template-columns: 1fr}
+      .grid3{grid-template-columns: 1fr}
+      .grid2{grid-template-columns: 1fr}
+      .profileMeta{grid-template-columns: 1fr}
+      .footGrid{grid-template-columns: 1fr}
+      .footLinks{justify-content:flex-start}
+      .navlinks{display:none}
+      .menuBtn{display:inline-flex}
+      .nav.open .navlinks{
+        display:flex; flex-direction:column; align-items:stretch;
+        position:absolute; left:18px; right:18px; top:64px;
+        background:rgba(11,16,32,.92);
+        border:1px solid rgba(255,255,255,.12);
+        border-radius:18px;
+        padding:10px;
+      }
+      .nav.open .navlinks a{border-radius:14px}
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>Converse por voz ou texto. (Se não aparecer a área de texto, ative <em>Voice + text</em> ou <em>Chat Mode</em> no painel do agente.)</header>
-    <div class="embed">
-      <!-- Embed fornecido -->
-      <elevenlabs-convai agent-id="agent_3201k92kx87dfqx9x349kb1824ez"></elevenlabs-convai>
-      <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
-      <!-- Fim do embed -->
+
+<header>
+  <div class="container">
+    <div class="nav" id="nav">
+      <a class="brand" href="#top" aria-label="Início">
+        <span class="logo" aria-hidden="true"></span>
+        <span>Dra. <span style="opacity:.9">Carol</span></span>
+      </a>
+
+      <button class="menuBtn" id="menuBtn" aria-label="Abrir menu">☰</button>
+
+      <nav class="navlinks" aria-label="Navegação">
+        <a href="#sobre">Sobre</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#diferenciais">Diferenciais</a>
+        <a href="#depoimentos">Depoimentos</a>
+        <a href="#duvidas">Dúvidas</a>
+        <a href="#contato">Contato</a>
+      </nav>
+
+      <a class="cta" href="#contato" aria-label="Agendar consulta">
+        Agendar
+        <span aria-hidden="true">→</span>
+      </a>
     </div>
-    <footer>© 2025</footer>
   </div>
+</header>
+
+<main id="top">
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container">
+      <div class="heroGrid">
+        <div>
+          <span class="pill"><span class="dot"></span> Atendimento humanizado • Brasil</span>
+          <h1 class="h1">Cuidado médico com clareza, acolhimento e foco em resultados.</h1>
+          <p class="lead">
+            A <b>Dra. Carol</b> é <b>Cirurgia Plástica</b>. Aqui você encontra informações sobre consultas,
+            orientações importantes e canais rápidos para agendamento.
+          </p>
+
+          <div class="heroActions">
+            <a class="cta" href="#contato">Agendar consulta</a>
+            <a class="ghost" href="#servicos">Ver serviços</a>
+            <a class="ghost" href="#sobre">Conhecer a doutora</a>
+          </div>
+
+          <div class="badges" style="margin-top:18px">
+            <span class="badge"><b>CRM:</b> [UF] [NÚMERO]</span>
+            <span class="badge"><b>RQE:</b> [NÚMERO]</span>
+            <span class="badge"><b>Tempo médio:</b> [EX.: 40–60 min]</span>
+          </div>
+        </div>
+
+        <!-- Card da doutora -->
+        <aside class="card profile" aria-label="Cartão de informações">
+          <div class="profileTop">
+            <div class="avatar">
+              <!-- Troque o src para a foto dela -->
+              <img src="assets/foto-perfil.jpg" alt="Foto da Dra. Carol" onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;display:grid;place-items:center;height:100%;color:rgba(234,240,255,.65);padding:10px;text-align:center;&quot;>Adicione aqui<br><b>assets/foto-perfil.jpg</b></div>';">
+            </div>
+            <div>
+              <h3>Dra. Carol</h3>
+              <p>Cirurgia Plástica • [SUBESPECIALIDADE (opcional)]</p>
+            </div>
+          </div>
+
+          <div class="profileMeta">
+            <div class="mini">
+              <div class="k">Endereço</div>
+              <div class="v">[Rua, nº — Bairro]<br>Brasil</div>
+            </div>
+            <div class="mini">
+              <div class="k">Contato</div>
+              <div class="v">
+                <a href="tel:+5524988214910">(24) 98821-4910</a><br>
+                <a href="mailto:contato@seudominio.com">contato@seudominio.com</a>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini">
+            <div class="k">Horários</div>
+            <div class="v">Seg a Sex: [08:00–18:00] • Sáb: [08:00–12:00]</div>
+          </div>
+
+          <a class="ghost" href="#contato" style="justify-content:center">Quero agendar agora</a>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOBRE -->
+  <section id="sobre">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2>Sobre a Dra. Carol</h2>
+          <p>
+            Conte aqui a trajetória de forma curta e confiável: formação, residência, atuação, visão de cuidado.
+            (Evite promessas absolutas; foque em abordagem e evidências.)
+          </p>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="feature card" style="padding:18px">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 21s-7-4.35-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.65-7 10-7 10Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Atendimento acolhedor</h3>
+          <p>Escuta ativa, explicação clara e plano de cuidado personalizado para sua rotina.</p>
+        </div>
+
+        <div class="feature card" style="padding:18px">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Consulta bem estruturada</h3>
+          <p>Anamnese completa, exame clínico, orientações e próximos passos por escrito quando necessário.</p>
+        </div>
+      </div>
+
+      <div class="gallery" style="margin-top:14px">
+        <div class="galleryMain">
+          <div class="ph">
+            <div>
+              <b>Foto do consultório ou da doutora atendendo</b>
+              <small>Troque por: <b>assets/foto-hero.jpg</b></small>
+            </div>
+          </div>
+        </div>
+        <div class="gallerySide">
+          <div class="phGrid">
+            <div class="ph phMini"><div><b>Foto 1</b><small>assets/foto-1.jpg</small></div></div>
+            <div class="ph phMini"><div><b>Foto 2</b><small>assets/foto-2.jpg</small></div></div>
+            <div class="ph phMini"><div><b>Foto 3</b><small>assets/foto-3.jpg</small></div></div>
+            <div class="ph phMini"><div><b>Foto 4</b><small>assets/foto-4.jpg</small></div></div>
+          </div>
+          <p style="margin:12px 2px 0; color:rgba(234,240,255,.68); font-size:13px">
+            Dica: use imagens leves (JPEG/WebP) e nomeie conforme acima para não precisar mexer no HTML.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVIÇOS -->
+  <section id="servicos">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2>Serviços e atendimentos</h2>
+          <p>Edite os itens abaixo conforme a atuação (consulta, pré-operatório, pós-operatório, teleatendimento).</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="feature card">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 8v8M8 12h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M6 20h12a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3>Consulta de avaliação</h3>
+          <p>Avaliação detalhada, alinhamento de expectativas e plano cirúrgico/pós-operatório quando indicado.</p>
+        </div>
+
+        <div class="feature card">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16v10H4z" stroke="currentColor" stroke-width="2"/><path d="M8 21h8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M9 11h6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Pré-avaliação online</h3>
+          <p>Triagem e orientações iniciais por vídeo, quando apropriado e conforme regras vigentes.</p>
+        </div>
+
+        <div class="feature card">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M7 17h10a4 4 0 0 0 0-8 6 6 0 0 0-12 1 4 4 0 0 0 2 7Z" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3>Pós-operatório e acompanhamento</h3>
+          <p>Acompanhamento pós-operatório com orientações claras, sinais de alerta e retornos programados.</p>
+        </div>
+      </div>
+
+      <div class="card" style="padding:18px; margin-top:14px">
+        <div class="sectionTitle" style="margin:0 0 8px">
+          <h2 style="font-size:20px; margin:0">Convênios e formas de pagamento</h2>
+          <p style="margin:0">Preencha com a realidade do consultório.</p>
+        </div>
+        <div class="badges">
+          <span class="badge">💳 Particular</span>
+          <span class="badge">🧾 Reembolso</span>
+          <span class="badge">🏥 Convênio: [NOME]</span>
+          <span class="badge">🏥 Convênio: [NOME]</span>
+        </div>
+      </div>
+
+      <div class="card" style="padding:18px; margin-top:14px">
+        <div class="sectionTitle" style="margin:0 0 8px">
+          <h2 style="font-size:20px; margin:0">Procedimentos (exemplos)</h2>
+          <p style="margin:0">Edite conforme atuação da Dra. Carol.</p>
+        </div>
+        <div class="badges">
+          <span class="badge">✨ Rinoplastia</span>
+          <span class="badge">✨ Mamoplastia</span>
+          <span class="badge">✨ Lipoaspiração</span>
+          <span class="badge">✨ Abdominoplastia</span>
+          <span class="badge">✨ Blefaroplastia</span>
+          <span class="badge">✨ Cirurgias reparadoras</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DIFERENCIAIS -->
+  <section id="diferenciais">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2>Diferenciais</h2>
+          <p>O que a paciente encontra aqui: transparência, segurança, cuidado e comunicação.</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="feature card">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 2l7 4v6c0 5-3 9-7 10-4-1-7-5-7-10V6l7-4Z" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3>Ética e segurança</h3>
+          <p>Conduta responsável, explicações claras e orientação baseada em evidências.</p>
+        </div>
+
+        <div class="feature card">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M4 12a8 8 0 1 0 16 0A8 8 0 1 0 4 12Z" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Pontualidade & organização</h3>
+          <p>Agenda organizada e orientações pré-consulta para aproveitar melhor o tempo.</p>
+        </div>
+
+        <div class="feature card">
+          <div class="icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M20 21v-7a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v7" stroke="currentColor" stroke-width="2"/><path d="M8 7a4 4 0 1 0 8 0 4 4 0 1 0-8 0Z" stroke="currentColor" stroke-width="2"/></svg>
+          </div>
+          <h3>Naturalidade & segurança</h3>
+          <p>Foco em resultados naturais, segurança e transparência em cada etapa do cuidado.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DEPOIMENTOS -->
+  <section id="depoimentos">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2>Depoimentos</h2>
+          <p>Use depoimentos reais (com autorização) ou substitua por informações do consultório (sem promessas).</p>
+        </div>
+      </div>
+
+      <div class="grid3">
+        <div class="quote card">
+          <p>“Fui muito bem acolhida e saí entendendo exatamente o que eu tinha e o que fazer.”</p>
+          <div class="who"><span>Paciente</span><span>★★★★★</span></div>
+        </div>
+        <div class="quote card">
+          <p>“A consulta foi detalhada e as orientações foram claras. Recomendo muito.”</p>
+          <div class="who"><span>Paciente</span><span>★★★★★</span></div>
+        </div>
+        <div class="quote card">
+          <p>“Atendimento humano e com muita atenção. Excelente profissional.”</p>
+          <div class="who"><span>Paciente</span><span>★★★★★</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section id="duvidas">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2>Dúvidas frequentes</h2>
+          <p>Personalize conforme sua rotina e regras do consultório.</p>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div>
+          <details open>
+            <summary>Como faço para agendar?</summary>
+            <p>Você pode agendar pelo WhatsApp, telefone ou pelo formulário abaixo. Se preferir, informe sua disponibilidade de dias/horários.</p>
+          </details>
+          <details>
+            <summary>Teleatendimento: quando é indicado?</summary>
+            <p>Em alguns casos, é possível orientar por vídeo. A decisão depende do quadro e das regras vigentes.</p>
+          </details>
+          <details>
+            <summary>Quais documentos levar?</summary>
+            <p>Documento com foto, exames anteriores, lista de medicamentos e encaminhamentos (se houver).</p>
+          </details>
+        </div>
+        <div>
+          <details open>
+            <summary>Como funciona o retorno?</summary>
+            <p>O retorno pode ser presencial ou (em alguns casos) remoto. Informe-se no momento do agendamento.</p>
+          </details>
+          <details>
+            <summary>Quais formas de pagamento?</summary>
+            <p>Particular, reembolso e/ou convênios (conforme lista acima). Confirme na recepção.</p>
+          </details>
+          <details>
+            <summary>Como chegar ao consultório?</summary>
+            <p>Insira o endereço completo e um mapa (abaixo) para facilitar.</p>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTATO -->
+  <section id="contato">
+    <div class="container">
+      <div class="sectionTitle">
+        <div>
+          <h2>Contato e agendamento</h2>
+          <p>Preencha e envie. Se preferir, clique no WhatsApp no canto da tela.</p>
+        </div>
+      </div>
+
+      <div class="contact">
+        <div class="map card">
+          <h3 style="margin:0 0 10px">Localização</h3>
+          <p style="margin:0 0 12px; color:rgba(234,240,255,.70)">
+            [Rua, nº — Bairro • Cidade/UF] <br>
+            <span style="opacity:.9">Estacionamento: [sim/não] • Acessibilidade: [sim/não]</span>
+          </p>
+
+          <!-- Google Maps embed: substitua o src pela URL do seu endereço -->
+          <iframe
+            title="Mapa do consultório"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=Av.%20Paulista%20SP&output=embed">
+          </iframe>
+
+          <div class="badges" style="margin-top:12px">
+            <span class="badge">📍 <b>Atende em:</b> Brasil</span>
+            <span class="badge">🕒 <b>Horários:</b> [Seg–Sex 08–18]</span>
+          </div>
+        </div>
+
+        <form class="card" id="contactForm">
+          <h3 style="margin:0 0 6px">Solicitar agendamento</h3>
+          <p style="margin:0 0 12px; color:rgba(234,240,255,.70)">
+            Este formulário abre seu WhatsApp ou e-mail com a mensagem pronta (sem salvar dados no site).
+          </p>
+
+          <div class="formRow">
+            <div>
+              <label for="nome">Nome</label>
+              <input id="nome" name="nome" placeholder="Seu nome" required />
+            </div>
+            <div>
+              <label for="telefone">Telefone/WhatsApp</label>
+              <input id="telefone" name="telefone" placeholder="(DDD) 9xxxx-xxxx" required />
+            </div>
+          </div>
+
+          <div class="formRow">
+            <div>
+              <label for="tipo">Tipo</label>
+              <select id="tipo" name="tipo">
+                <option>Consulta</option>
+                <option>Retorno</option>
+                <option>Pré-avaliação</option>
+                <option>Outro</option>
+              </select>
+            </div>
+            <div>
+              <label for="horario">Preferência de dia/horário</label>
+              <input id="horario" name="horario" placeholder="Ex.: terça à tarde" />
+            </div>
+          </div>
+
+          <label for="mensagem">Mensagem</label>
+          <textarea id="mensagem" name="mensagem" placeholder="Conte brevemente o motivo da consulta (sem detalhes sensíveis)."></textarea>
+
+          <div class="heroActions" style="margin-top:12px">
+            <button class="cta" type="submit">Enviar por WhatsApp</button>
+            <button class="ghost" type="button" id="sendEmailBtn">Enviar por E-mail</button>
+          </div>
+
+          <div class="helper">
+            <b>Importante:</b> este site tem caráter informativo e não substitui atendimento médico de urgência. Em emergências, procure serviço de saúde imediatamente.
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footGrid">
+      <div>
+        <div class="brand" style="margin-bottom:10px">
+          <span class="logo" aria-hidden="true"></span>
+          <span>Dra. Carol</span>
+        </div>
+        <div style="max-width:80ch">
+          <div style="margin-bottom:6px">© <span id="year"></span> • Todos os direitos reservados.</div>
+          <div style="opacity:.95">
+            <b>CRM:</b> [UF] [NÚMERO] • <b>RQE:</b> [NÚMERO] <br>
+            <span style="color:rgba(234,240,255,.62)">
+              Este site tem caráter informativo. Não há garantia de resultados e não substitui avaliação presencial quando necessária.
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="footLinks">
+        <a href="#sobre">Sobre</a>
+        <a href="#servicos">Serviços</a>
+        <a href="#duvidas">Dúvidas</a>
+        <a href="#contato">Contato</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- WhatsApp flutuante -->
+<a class="wa" id="waFloat" href="#" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <span>WhatsApp</span>
+  <small>Agendar agora</small>
+</a>
+
+<script>
+  // ====== Configurações rápidas ======
+  const WHATSAPP_NUMBER = "5524988214910"; // DDI+DDD+numero (sem +, espaços ou traços)
+  const EMAIL_TO = "contato@seudominio.com";
+  const DOCTOR_NAME = "Dra. Carol";
+
+  // ====== Menu mobile ======
+  const nav = document.getElementById("nav");
+  const menuBtn = document.getElementById("menuBtn");
+  menuBtn?.addEventListener("click", () => nav.classList.toggle("open"));
+
+  // ====== Ano no rodapé ======
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // ====== Helpers ======
+  function encode(str){ return encodeURIComponent(str || ""); }
+
+  function buildMessage(){
+    const nome = document.getElementById("nome").value.trim();
+    const tel = document.getElementById("telefone").value.trim();
+    const tipo = document.getElementById("tipo").value.trim();
+    const horario = document.getElementById("horario").value.trim();
+    const msg = document.getElementById("mensagem").value.trim();
+
+    let text = `Olá! Gostaria de agendar com ${DOCTOR_NAME}.%0A%0A`;
+    text += `Nome: ${encode(nome)}%0A`;
+    text += `Telefone: ${encode(tel)}%0A`;
+    text += `Tipo: ${encode(tipo)}%0A`;
+    if(horario) text += `Preferência: ${encode(horario)}%0A`;
+    if(msg) text += `%0AMensagem: ${encode(msg)}%0A`;
+    return text;
+  }
+
+  function openWhatsApp(text){
+    const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${text}`;
+    window.open(url, "_blank");
+  }
+
+  function openEmail(text){
+    const subject = encodeURIComponent(`Agendamento — ${DOCTOR_NAME}`);
+    const body = text.replaceAll("%0A", "\\n").replaceAll("%0a", "\\n");
+    const url = `mailto:${EMAIL_TO}?subject=${subject}&body=${body}`;
+    window.location.href = url;
+  }
+
+  // ====== Form actions ======
+  const form = document.getElementById("contactForm");
+  form?.addEventListener("submit", (e) => {
+    e.preventDefault();
+    if(!form.checkValidity()){
+      form.reportValidity();
+      return;
+    }
+    openWhatsApp(buildMessage());
+  });
+
+  document.getElementById("sendEmailBtn")?.addEventListener("click", () => {
+    if(!form.checkValidity()){
+      form.reportValidity();
+      return;
+    }
+    openEmail(buildMessage());
+  });
+
+  // ====== WhatsApp flutuante ======
+  const waFloat = document.getElementById("waFloat");
+  waFloat.href = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent("Olá! Gostaria de agendar uma consulta.")}`;
+</script>
+
 </body>
 </html>
